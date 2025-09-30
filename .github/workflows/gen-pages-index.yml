@@ -13,6 +13,5 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: npm install
-        if: ${{ exists('package.json') }}
+      - run: if [ -f package.json ]; then npm install; fi
       - run: node gen-pages-index.js
