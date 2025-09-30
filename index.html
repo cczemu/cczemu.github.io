@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>emu's blog</title>
+</head>
+
+<body>
+    <h1>emu's blog</h1>
+    <link rel="stylesheet" href="normalize.min.css">
+    <ul id="md-list"></ul>
+    <script>
+        fetch('index.json', {
+            cache: 'no-cache', // 或者 'reload'
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        })
+            .then(res => res.json())
+            .then(list => {
+                const ul = document.getElementById('md-list');
+                list.forEach(file => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = `page.html?file=${encodeURIComponent(file)}`;
+                    a.textContent = file;
+                    a.target = '_self';
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                });
+            });
+    </script>
+</body>
+
+</html>
