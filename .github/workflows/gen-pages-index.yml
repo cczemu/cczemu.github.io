@@ -1,9 +1,8 @@
-name: Auto Generate Pages Index
+name: Auto Generate and Commit Pages Index
 
 on:
   push:
-    paths:
-      - 'pages/**'
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -11,4 +10,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
       - run: node gen-pages-index.js
+      - name: Commit and push if changed
+        run: |
+          git add index.json
+          git diff --cached --quiet || (git commit -m "chore: auto update index.json" && git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main)
