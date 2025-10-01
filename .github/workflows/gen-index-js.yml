@@ -2,31 +2,29 @@ name: Auto Generate and Commit Pages Index
 
 on:
   push:
-    branches: [main]  # 限制只在 main 分支触发，避免开发分支问题
-    paths:
-      - 'pages/**'
-  workflow_dispatch:  # 手动触发
+    branches: [main]  # 只在 main 分支触发（可选，减少循环）
+  workflow_dispatch:  # 手动触发保留
 
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 允许 push 更改
+      contents: write  # 允许 push
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # 更新到 v4
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # 用 token 启用 push
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'  # 假设用 Node 20，根据你的脚本调整（如 '18' 或 'lts'）
+          node-version: '20'  # 根据你的脚本调整
 
-      # 如果有 npm 依赖，取消注释下面步骤
+      # 如果有 npm 依赖，取消注释
       # - name: Install dependencies
-      #   run: npm ci  # 或 npm install，根据 package.json
+      #   run: npm ci
 
       - name: Set up Git
         run: |
@@ -43,5 +41,5 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "chore: auto update index.json [skip ci]"
-            git push origin HEAD  # 动态推到当前分支（HEAD 等同 $GITHUB_REF_NAME）
+            git push origin HEAD
           fi
