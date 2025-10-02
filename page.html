@@ -8,8 +8,10 @@
 </head>
 
 <body>
-    <script src="marked.min.js"></script>
-    <div id="md-content"></div>
+    <main>
+        <div id="md-content"></div>
+    </main>
+    <script src="js/marked.min.js"></script>
     <script>
         const params = new URLSearchParams(window.location.search);
         const file = params.get('file') || '你好.md'; // 默认值
@@ -26,6 +28,9 @@
                 document.getElementById('md-content').innerHTML = marked.parse(text);
             });
     </script>
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/magick.min.css">
+    <link rel="stylesheet" href="css/page.css">
 </body>
 
 </html>

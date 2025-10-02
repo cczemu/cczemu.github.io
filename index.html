@@ -8,8 +8,10 @@
 </head>
 
 <body>
-    <h1>ccz&emu's blog</h1>
-    <ul id="md-list"></ul>
+    <main>
+        <h1>ccz&emu's blog</h1>
+        <ul id="md-list"></ul>
+    </main>
     <script>
         fetch('index.json', {
             cache: 'no-cache', // 或者 'reload'
@@ -31,6 +33,9 @@
                 });
             });
     </script>
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/magick.min.css">
+    <link rel="stylesheet" href="css/index.css">
 </body>
 
 </html>
