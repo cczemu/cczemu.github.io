@@ -1,6 +1,7 @@
 main ul {
-    list-style: square;
+    list-style: none;
     color: #4e1ed4;
+    padding-left: 0;
 }
 
 main ul li {

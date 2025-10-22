@@ -136,6 +136,12 @@ blockquote {
     border-top: 1.5px solid #bba0e3;
     border-bottom: 1.5px solid #bba0e3;
     border-right: 1.5px solid #bba0e3;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+blockquote blockquote {
+    margin-left: 1em;
 }
 
 blockquote p {
