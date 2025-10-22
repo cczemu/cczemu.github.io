@@ -14,6 +14,11 @@ body {
     font-family: "Fusion Pixel Font", monospace, sans-serif;
 }
 
+/* 全局盒模型：使元素的宽度包含 padding 和 border，避免 width:100% 引起溢出 */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 /* ================= 布局与容器 ================= */
 .window {
     width: 100%;
@@ -142,6 +147,7 @@ blockquote {
 
 blockquote blockquote {
     margin-left: 1em;
+    margin-right: 1em;
 }
 
 blockquote p {
