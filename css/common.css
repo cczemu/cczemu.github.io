@@ -1,0 +1,199 @@
+
+/* ================= 基础字体与全局 ================= */
+@font-face {
+    font-family: "Fusion Pixel Font";
+    src: url(../fonts/fusion-pixel-12px-monospaced-zh_hans.otf.woff2) format("woff2"),
+        url(../fonts/fusion-pixel-12px-monospaced-zh_hant.otf.woff2) format("woff2"),
+        url(../fonts/fusion-pixel-12px-monospaced-latin.otf.woff2) format("woff2"),
+        url(../fonts/fusion-pixel-12px-monospaced-ko.otf.woff2) format("woff2"),
+        url(../fonts/fusion-pixel-12px-monospaced-ja.otf.woff2) format("woff2");
+}
+
+body {
+    background-color: #e3e8fe;
+    font-family: "Fusion Pixel Font", monospace, sans-serif;
+}
+
+/* ================= 布局与容器 ================= */
+.window {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    background-color: #e3e3e3;
+}
+
+.window .container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin: 5px;
+    border: #4d23cf 1.5px solid;
+}
+
+.window .container .title {
+    font-size: 20px;
+    color: #4d23cf;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.window .container .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.window .container .buttons .min,
+.max,
+.close {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    border: #4d23cf 1.5px solid;
+    text-align: center;
+}
+
+main {
+    margin: 20px auto;
+    width: 60vw;
+    background-color: #f7e0fa;
+    border: #4d23cf 1.5px solid;
+}
+
+main .content {
+    margin: 5px;
+    border: #4d23cf 1.5px solid;
+    padding: 10px 30px;
+}
+
+/* ================= 主要内容区 ================= */
+main h1 {
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    color: #8670b5;
+}
+
+main p {
+    text-indent: 2em;
+    font-size: 14px;
+    line-height: 2;
+    letter-spacing: 0.03em;
+    margin-bottom: 1.5em;
+    color: #333;
+}
+
+
+main ul{
+    list-style: square;;
+}
+
+main ul li a {
+    color: #4e1ed4;
+}
+
+.buttom {
+    text-align: right;
+    margin-right: 5px;
+    color: #737373;
+}
+
+p img {
+    display: block;
+    margin: 0 auto;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ================= 代码与引用 ================= */
+pre {
+    background-color: #fff9ff;
+    width: 100%;
+    padding: 10px 10px;
+    color: #4d23cf;
+    overflow-x: auto;
+    border: 1.5px solid #bba0e3;
+}
+
+pre code {
+    font-family: "Fusion Pixel Font", monospace, sans-serif;
+}
+
+p code {
+    font-family: "Fusion Pixel Font", monospace, sans-serif;
+    color: #4d23cf;
+    background-color: #fff9ff;
+    padding: 2px 4px;
+}
+
+blockquote {
+    background-color: #fff9ff;
+    border-left: 5px solid #bba0e3;
+    border-top: 1.5px solid #bba0e3;
+    border-bottom: 1.5px solid #bba0e3;
+    border-right: 1.5px solid #bba0e3;
+}
+
+blockquote p {
+    margin: 1em 0;
+    color: #4d23cf;
+    font-size: 15px;
+    font-style: italic;
+}
+
+/* ================= 表格 ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    background-color: #fff9ff;
+    font-size: 14px;
+}
+
+th,
+td {
+    border: 1.5px solid #bba0e3;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #e3e8fe;
+    color: #4d23cf;
+    font-weight: bold;
+}
+
+td {
+    color: #333;
+}
+
+tr:nth-child(even) {
+    background-color: #f7e0fa;
+}
+
+tr:hover {
+    background-color: #f3d6ff;
+}
+
+/* ================= 响应式 ================= */
+@media (min-width: 1200px) {
+    main {
+        width: 60vw;
+    }
+}
+
+@media (min-width: 600px) and (max-width: 1199px) {
+    main {
+        width: 75vw;
+    }
+}
+
+@media (max-width: 599px) {
+    main {
+        width: 95vw;
+    }
+}

@@ -5,11 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
+        <link rel="stylesheet" href="css/common.css" />
+        <link rel="stylesheet" href="css/page.css">
+    <link rel="stylesheet" href="css/normalize.min.css" />
 </head>
 
 <body>
     <main>
-        <div id="md-content"></div>
+        <div class="window">
+            <div class="container">
+                <div class="title"> <a href="javascript:history.back()">返回上一页</a> </div>
+                <div class="buttons">
+                    <div class="min">-</div>
+                    <div class="max">☐</div>
+                    <div class="close">X</div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div id="md-content"></div>
+        </div>
+        <div class="buttom">
+            &copy; made by ccz
+        </div>
+        
     </main>
     <script src="js/marked.min.js"></script>
     <script>
@@ -28,6 +47,6 @@
                 document.getElementById('md-content').innerHTML = marked.parse(text);
             });
     </script>
-    </body>
+</body>
 
 </html>
