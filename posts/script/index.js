@@ -1,22 +1,4 @@
-import grayMatterBrowser from 'https://cdn.jsdelivr.net/npm/gray-matter-browser@4.0.4/+esm';
-import { marked } from "https://cdn.jsdelivr.net/npm/marked@11.2.0/lib/marked.esm.js";
-
-//navbar
-const navMenu = document.querySelector("#navMenu");
-const navLinks = document.querySelector(".navLinkGroup");
-
-function toggleNavigation() {
-    const isOpen = navLinks.classList.toggle("active");
-    navMenu.setAttribute("aria-expanded", String(isOpen));
-}
-
-navMenu.addEventListener("click", toggleNavigation);
-navMenu.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        toggleNavigation();
-    }
-});
+import { getPlainText, parseFrontMatter, renderMarkdown } from "../../script/content.js";
 
 async function main() {
     const path = getQueryVariable("title");
@@ -24,10 +6,10 @@ async function main() {
     if (!path) throw new Error("缺少文章路径");
     const response = await fetch(`../posts/${encodeURIComponent(path)}`);
     if (!response.ok) throw new Error("文章不存在");
-    const parsed = grayMatterBrowser(await response.text());
+    const parsed = parseFrontMatter(await response.text());
     const metadata = parsed.data;
-    const html = marked.parse(parsed.content);
-    const pureText = new DOMParser().parseFromString(html, "text/html").body.textContent.trim();
+    const html = renderMarkdown(parsed.content);
+    const pureText = getPlainText(html);
     const date = metadata.date instanceof Date ? metadata.date : new Date(metadata.date);
 
     document.title = `${metadata.title || "文章"} | moeday's blog`;

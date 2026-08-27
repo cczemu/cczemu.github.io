@@ -1,11 +1,19 @@
 const storageKey = "liquid-glass-alpha";
 const themeStorageKey = "site-theme";
+const wallpaperStorageKey = "bing-wallpaper-url";
+const wallpaperIndexStorageKey = "bing-wallpaper-index";
 const root = document.documentElement;
 const themeStylesheet = document.querySelector("#themeStylesheet");
 const savedTheme = localStorage.getItem(themeStorageKey);
-const initialTheme = ["md3e", "md1"].includes(savedTheme) ? savedTheme : "liquid";
+const initialTheme = ["liquid", "md3e", "md1"].includes(savedTheme) ? savedTheme : "md1";
 root.dataset.theme = initialTheme;
 themeStylesheet.href = themeStylesheet.href.replace("liquid-glass.css", `${initialTheme === "md3e" ? "md3e" : initialTheme === "md1" ? "md1" : "liquid-glass"}.css`);
+const cachedWallpaperUrl = localStorage.getItem(wallpaperStorageKey);
+const savedWallpaperIndex = Number(localStorage.getItem(wallpaperIndexStorageKey));
+const initialWallpaperIndex = Number.isInteger(savedWallpaperIndex) && savedWallpaperIndex >= 0 ? savedWallpaperIndex : 0;
+if (initialTheme !== "md1" && cachedWallpaperUrl) {
+    document.body.style.backgroundImage = `url("${cachedWallpaperUrl}")`;
+}
 const savedAlpha = Number(localStorage.getItem(storageKey));
 const initialAlpha = Number.isFinite(savedAlpha) && savedAlpha >= 0.2 && savedAlpha <= 0.88 ? savedAlpha : 0.58;
 
@@ -53,7 +61,7 @@ const intensityControl = control.querySelector(".glass-control__intensity");
 const controlTrigger = control.querySelector("#controlTrigger");
 const controlPanel = control.querySelector("#controlPanel");
 const controlClose = control.querySelector("#controlClose");
-let wallpaperIndex = 0;
+let wallpaperIndex = initialWallpaperIndex;
 
 function applyGlassAlpha(percent) {
     const alpha = Number(percent) / 100;
@@ -69,6 +77,9 @@ function applyTheme(theme) {
     const nextTheme = ["md3e", "md1"].includes(theme) ? theme : "liquid";
     root.dataset.theme = nextTheme;
     if (nextTheme === "md1") document.body.style.removeProperty("background-image");
+    if (nextTheme !== "md1" && cachedWallpaperUrl) {
+        document.body.style.backgroundImage = `url("${cachedWallpaperUrl}")`;
+    }
     const stylesheetName = nextTheme === "md3e" ? "md3e" : nextTheme === "md1" ? "md1" : "liquid-glass";
     themeStylesheet.href = themeStylesheet.href.replace(/(?:liquid-glass|md3e|md1)\.css$/, `${stylesheetName}.css`);
     themeSelect.value = nextTheme;
@@ -84,19 +95,6 @@ function setPanelOpen(isOpen) {
     controlPanel.hidden = !isOpen;
     controlTrigger.setAttribute("aria-expanded", String(isOpen));
 }
-
-slider.addEventListener("input", (event) => applyGlassAlpha(event.target.value));
-themeSelect.addEventListener("change", (event) => applyTheme(event.target.value));
-controlTrigger.addEventListener("click", () => setPanelOpen(!control.classList.contains("is-open")));
-controlClose.addEventListener("click", () => setPanelOpen(false));
-document.addEventListener("click", (event) => {
-    if (!control.contains(event.target)) setPanelOpen(false);
-});
-document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setPanelOpen(false);
-});
-applyTheme(root.dataset.theme);
-applyGlassAlpha(slider.value);
 
 function updateWallpaperNavigation() {
     todayWallpaper.disabled = wallpaperIndex === 0;
@@ -126,6 +124,8 @@ async function loadBingWallpaper(index) {
         preloader.onload = () => {
             if (root.dataset.theme !== "md1") {
                 document.body.style.backgroundImage = `url("${wallpaperUrl}")`;
+                localStorage.setItem(wallpaperStorageKey, wallpaperUrl);
+                localStorage.setItem(wallpaperIndexStorageKey, String(index));
             }
             wallpaperIndex = index;
             wallpaperStatus.textContent = getWallpaperLabel(index, data.start_date);
@@ -145,6 +145,24 @@ async function loadBingWallpaper(index) {
     }
 }
 
+slider.addEventListener("input", (event) => applyGlassAlpha(event.target.value));
+themeSelect.addEventListener("change", (event) => applyTheme(event.target.value));
+controlTrigger.addEventListener("click", () => setPanelOpen(!control.classList.contains("is-open")));
+controlClose.addEventListener("click", () => setPanelOpen(false));
+document.addEventListener("click", (event) => {
+    if (!control.contains(event.target)) setPanelOpen(false);
+});
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") setPanelOpen(false);
+});
 previousWallpaper.addEventListener("click", () => loadBingWallpaper(wallpaperIndex + 1));
 todayWallpaper.addEventListener("click", () => loadBingWallpaper(Math.max(0, wallpaperIndex - 1)));
-loadBingWallpaper(0);
+
+applyTheme(root.dataset.theme);
+applyGlassAlpha(slider.value);
+updateWallpaperNavigation();
+
+if (root.dataset.theme !== "md1" && !cachedWallpaperUrl) {
+    const scheduleWallpaperLoad = window.requestIdleCallback || ((callback) => setTimeout(callback, 0));
+    scheduleWallpaperLoad(() => loadBingWallpaper(0));
+}

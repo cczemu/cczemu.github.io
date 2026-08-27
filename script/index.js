@@ -1,23 +1,4 @@
-import grayMatterBrowser from 'https://cdn.jsdelivr.net/npm/gray-matter-browser@4.0.4/+esm';
-import { marked } from "https://cdn.jsdelivr.net/npm/marked@11.2.0/lib/marked.esm.js";
-
-//navbar
-const navMenu = document.querySelector("#navMenu");
-const navLinks = document.querySelector(".navLinkGroup");
-
-function toggleNavigation() {
-    const isOpen = navLinks.classList.toggle("active");
-    navMenu.setAttribute("aria-expanded", String(isOpen));
-}
-
-navMenu.addEventListener("click", toggleNavigation);
-navMenu.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        toggleNavigation();
-    }
-});
-
+import { getPlainText, parseFrontMatter, renderMarkdown } from "./content.js";
 
 function createLink(text, href, className) {
     const link = document.createElement("a");
@@ -56,12 +37,11 @@ async function main() {
         const response = await fetch("./links.json");
         if (!response.ok) throw new Error("文章列表加载失败");
         const urls = await response.json();
-        const posts = await Promise.all(Object.values(urls).map(async (path) => {
+        const results = await Promise.allSettled(Object.values(urls).map(async (path) => {
             const postResponse = await fetch(`posts/${encodeURIComponent(path)}`);
             if (!postResponse.ok) throw new Error(`文章加载失败: ${path}`);
-            const parsed = grayMatterBrowser(await postResponse.text());
-            const html = marked.parse(parsed.content);
-            const text = new DOMParser().parseFromString(html, "text/html").body.textContent.trim();
+            const parsed = parseFrontMatter(await postResponse.text());
+            const text = getPlainText(renderMarkdown(parsed.content));
             const date = parsed.data.date instanceof Date ? parsed.data.date : new Date(parsed.data.date);
             return {
                 title: parsed.data.title || "未命名文章",
@@ -72,6 +52,12 @@ async function main() {
                 href: `./posts/?title=${encodeURIComponent(path)}`
             };
         }));
+        const posts = results.flatMap((result) => {
+            if (result.status === "fulfilled") return [result.value];
+            console.error(result.reason);
+            return [];
+        });
+        if (posts.length === 0) throw new Error("没有可显示的文章");
         content.replaceChildren(...posts.map(createCard));
     } catch (error) {
         content.innerHTML = '<p class="status-message" data-status="error">文章暂时无法加载，请稍后重试。</p>';

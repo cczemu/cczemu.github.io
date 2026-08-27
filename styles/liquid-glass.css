@@ -38,7 +38,7 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     color: var(--ink);
-    background: #dcecff;
+    background: #dcecff center center / cover no-repeat fixed;
     font-family: "SF Pro Text", "SF Pro Display", -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
