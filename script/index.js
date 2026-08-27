@@ -1,4 +1,5 @@
-import { getPlainText, parseFrontMatter, renderMarkdown } from "./content.js";
+import { getPlainText, renderMarkdown } from "./content.js";
+import { loadPosts } from "./posts.js";
 
 function createLink(text, href, className) {
     const link = document.createElement("a");
@@ -34,13 +35,7 @@ function createCard(post) {
 async function main() {
     const content = document.querySelector(".content");
     try {
-        const response = await fetch("./links.json");
-        if (!response.ok) throw new Error("文章列表加载失败");
-        const urls = await response.json();
-        const results = await Promise.allSettled(Object.values(urls).map(async (path) => {
-            const postResponse = await fetch(`posts/${encodeURIComponent(path)}`);
-            if (!postResponse.ok) throw new Error(`文章加载失败: ${path}`);
-            const parsed = parseFrontMatter(await postResponse.text());
+        const posts = (await loadPosts()).map(({ path, parsed }) => {
             const text = getPlainText(renderMarkdown(parsed.content));
             const date = parsed.data.date instanceof Date ? parsed.data.date : new Date(parsed.data.date);
             return {
@@ -51,13 +46,7 @@ async function main() {
                 summary: `${text.slice(0, 80)}${text.length > 80 ? " ..." : ""}`,
                 href: `./posts/?title=${encodeURIComponent(path)}`
             };
-        }));
-        const posts = results.flatMap((result) => {
-            if (result.status === "fulfilled") return [result.value];
-            console.error(result.reason);
-            return [];
         });
-        if (posts.length === 0) throw new Error("没有可显示的文章");
         content.replaceChildren(...posts.map(createCard));
     } catch (error) {
         content.innerHTML = '<p class="status-message" data-status="error">文章暂时无法加载，请稍后重试。</p>';

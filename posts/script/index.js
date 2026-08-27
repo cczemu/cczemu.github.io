@@ -1,12 +1,11 @@
-import { getPlainText, parseFrontMatter, renderMarkdown } from "../../script/content.js";
+import { getPlainText, renderMarkdown } from "../../script/content.js";
+import { loadPost } from "../../script/posts.js";
 
 async function main() {
     const path = getQueryVariable("title");
     const content = document.querySelector(".article-content");
     if (!path) throw new Error("缺少文章路径");
-    const response = await fetch(`../posts/${encodeURIComponent(path)}`);
-    if (!response.ok) throw new Error("文章不存在");
-    const parsed = parseFrontMatter(await response.text());
+    const parsed = await loadPost(path);
     const metadata = parsed.data;
     const html = renderMarkdown(parsed.content);
     const pureText = getPlainText(html);
@@ -23,11 +22,6 @@ async function main() {
         link.target = "_blank";
         link.rel = "noopener noreferrer";
     });
-}
-
-function getTitle(){
-    console.log(window.location.href)
-    return window.location.href
 }
 
 function getQueryVariable(variable) {

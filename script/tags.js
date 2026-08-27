@@ -1,27 +1,16 @@
-import { parseFrontMatter } from "./content.js";
+import { loadPosts } from "./posts.js";
 
 async function main() {
     const content = document.querySelector(".content");
     try {
-        const response = await fetch("links.json");
-        if (!response.ok) throw new Error("文章列表加载失败");
-        const linksArr = Object.values(await response.json());
-        const results = await Promise.allSettled(linksArr.map(async (link) => {
-            const postResponse = await fetch(`posts/${encodeURIComponent(link)}`);
-            if (!postResponse.ok) throw new Error(`文章加载失败: ${link}`);
-            const { data: metadata } = parseFrontMatter(await postResponse.text());
+        const posts = await loadPosts();
+        const tagsInfoArr = posts.map(({ path: link, parsed: { data: metadata } }) => {
             return {
                 title: metadata.title || "未命名文章",
                 tag: metadata.categories || "未分类",
                 link
             };
-        }));
-        const tagsInfoArr = results.flatMap((result) => {
-            if (result.status === "fulfilled") return [result.value];
-            console.error(result.reason);
-            return [];
         });
-        if (tagsInfoArr.length === 0) throw new Error("没有可显示的标签");
 
     //对象数组根据每个对象的link降序
     tagsInfoArr.sort((a, b) => {
