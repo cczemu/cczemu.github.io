@@ -27,7 +27,7 @@
 }
 
 html { scroll-behavior: smooth; }
-body { min-width: 320px; min-height: 100vh; overflow-x: hidden; color: var(--on-surface); background: #eef1f8 center center / cover no-repeat fixed; font-family: "Google Sans Text", "Google Sans", "SF Pro Text", -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body { min-width: 320px; min-height: 100vh; overflow-x: hidden; color: var(--on-surface); background: #eef1f8 center center / cover no-repeat; background-position: center center; background-size: cover; background-repeat: no-repeat; font-family: "Google Sans Text", "Google Sans", "SF Pro Text", -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
 body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: rgba(238, 241, 248, var(--background-alpha)); pointer-events: none; }
 body::after { content: none; }
 body > * { position: relative; }
