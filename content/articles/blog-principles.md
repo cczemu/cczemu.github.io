@@ -85,6 +85,8 @@ python3 tools/generate-article-index.py
 
 详情页脚本从 URL 查询参数取得 `slug`，读取对应 Markdown 文件，再把标题、分类、字数、日期和正文写入页面。Markdown 正文先经过 `marked` 转换为 HTML，再交给 `DOMPurify` 清理后插入文档。
 
+字数和日期显示在文章标题区右下角。样式将它们绝对定位在 `.article-slogan` 内，因此它们相对于标题区定位，不会挤占标题、分类标签与正文之间的正常排版空间。`.article-slogan` 必须建立定位上下文；若缺少 `position: relative`，统计信息会错误地参照页面视口定位。
+
 站外链接会在新标签页打开，并设置 `rel="noopener noreferrer"`，避免新页面通过 `window.opener` 操作来源页面。
 
 ### 标签页
