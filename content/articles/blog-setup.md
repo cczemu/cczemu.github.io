@@ -9,6 +9,7 @@ date: 2021-11-14
  | Python静态渲染 |2022年2月9日|Typora撰写，Python渲染，在线MD编辑器MoEditor|
  | AJAX动态获取 |  2023年7月5日|AJXA，Marked.js解析文档|
  | Fetch API和异步 |  2023年10月20日|Fetch API，YAML Front Matter，Marked.js，grayMatterBrowser|
+ | 纯前端静态博客 | 2026年|GitHub Pages托管，浏览器读取文章索引并解析Markdown|
 
 ### 初次搭建
 
@@ -50,8 +51,14 @@ date: 2021-11-14
 
 视觉部分从旧版的简单样式逐渐发展为三套可切换主题：Liquid Glass、Material Design 1 和 Material Design 3 Expressive。主题、壁纸和透明度设置会保存在浏览器的 `localStorage` 中，用户刷新页面后仍能保留选择。背景图片也统一为水平垂直居中、按比例覆盖视口且不重复，首页、标签页和文章页使用同一套背景规则。
 
-最近一次改进集中在代码组织。文章清单保存在 `data/articles.json`，Markdown 正文放在 `content/articles/`。`js/shared/articles.js` 负责文章索引、正文请求和 front matter 解析；`js/shared/markdown.js` 专注于 Markdown 渲染、清理和纯文本提取；`js/pages/` 下的页面脚本则只负责对应页面的展示。这样修改文章加载方式时只需要维护一个共享模块，也降低了页面行为不一致的可能。
+### 当前版本的搭建与发布
 
-文章详情页的标题区显示标题、分类、字数和日期。字数与日期固定在标题区的右下方，不参与标题和分类标签到正文之间的排版间距；这个定位以标题区本身为参照，而不是浏览器视口。
+当前版本由浏览器直接读取静态文件，不需要运行 Python 或 Node.js 来生成文章页面。GitHub Pages 负责托管网页和 Markdown 文件；首页与标签页读取 `data/articles.json`，再通过 Fetch API 获取 `content/articles/` 中列出的文章。gray-matter-browser 解析文章开头的 YAML Front Matter，Marked.js 将正文转换成 HTML，DOMPurify 清理转换结果后再显示。关于这套流程的简要说明，见[博客的技术原理](?slug=blog-principles.md)。
 
-目前项目仍然是无构建步骤的静态前端，优点是部署简单、依赖少，缺点是部分依赖通过 CDN 加载，文章较多时首页和标签页会同时请求多个 Markdown 文件。后续可以考虑增加缓存、分页或搜索功能，并进一步拆分公共样式和主题样式；不过现阶段的结构已经比最初版本更清晰，也更容易继续扩展。
+添加新文章时，可以按以下步骤操作：
+
+1. 在 `content/articles/` 下新建 Markdown 文件，并在开头填写 `title`、`categories` 和 `date`。
+2. 将文件名添加到 `data/articles.json` 数组中，文件名应与实际文件一致。
+3. 提交并推送到 GitHub。GitHub Pages 发布更新后，首页和标签页就会从索引中加载这篇文章。
+
+文章详情页的地址由文件名生成，例如 `blog-principles.md` 对应 `article/?slug=blog-principles.md`。不需要为每篇文章另建 HTML 页面。
